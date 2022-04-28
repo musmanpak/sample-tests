@@ -68,6 +68,7 @@ describe('cuboid get', () => {
       width: 4,
       height: 4,
       depth: 4,
+      volume: 64,
       bagId,
     });
     const id = (await Cuboid.query().insert(cuboid)).id;
@@ -196,9 +197,17 @@ describe('cuboid update', () => {
     );
   });
 
-  it('should succeed to update the cuboid', () => {
+  it('should succeed to update the cuboid', async () => {
     const [newWidth, newHeight, newDepth] = [5, 5, 5];
-    const response = { body: {} as Cuboid, status: HttpStatus.OK };
+
+    const response = await request(server)
+      .put(urlJoin('/cuboids', cuboid.id.toString()))
+      .send({
+        newWidth,
+        newHeight,
+        newDepth,
+      });
+
     cuboid = response.body;
 
     expect(response.status).toBe(HttpStatus.OK);
